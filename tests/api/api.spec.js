@@ -7,8 +7,8 @@ let token;
 test.beforeAll("get token first", async ({ request }) => {
 	const getToken = await request.post("/users/login", {
 		data: {
-			email: process.env.API_EMAIL,
-			password: process.env.API_PASSWORD,
+			email: 'mycontacttest@yopmail.com',
+			password: 'Qwerty1209!',
 		},
 	});
 	expect(getToken.ok()).toBeTruthy();
@@ -38,8 +38,8 @@ test("should sign up successfully", async ({ request }) => {
 test("should log in successfully", async ({ request }) => {
 	const logIn = await request.post("/users/login", {
 		data: {
-			email: process.env.API_EMAIL,
-			password: process.env.API_PASSWORD,
+			email: 'mycontacttest@yopmail.com',
+			password: 'Qwerty1209!',
 		},
 	});
 
@@ -47,9 +47,9 @@ test("should log in successfully", async ({ request }) => {
 	console.log(response);
 
 	expect(logIn.ok()).toBeTruthy();
-	expect(response.user.firstName).toBe(process.env.API_FIRSTNAME);
-	expect(response.user.lastName).toBe(process.env.API_LASTNAME);
-	expect(response.user.email).toBe(process.env.API_EMAIL);
+	expect(response.user.firstName).toBe('Test');
+	expect(response.user.lastName).toBe('User');
+	expect(response.user.email).toBe('mycontacttest@yopmail.com');
 });
 
 test("should get user profile successfully", async ({ request }) => {
@@ -63,7 +63,7 @@ test("should get user profile successfully", async ({ request }) => {
 	console.log(response);
 
 	expect(getProfile.ok).toBeTruthy();
-	expect(response.firstName).toBe(process.env.API_FIRSTNAME);
-	expect(response.lastName).toBe(process.env.API_LASTNAME);
-	expect(response.email).toBe(process.env.API_EMAIL);
+	expect(response.firstName).toBe('Test');
+	expect(response.lastName).toBe('User');
+	expect(response.email).toBe('mycontacttest@yopmail.com');
 });
