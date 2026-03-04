@@ -21,41 +21,41 @@ const getToken = async () => {
 	return data.token;
 };
 
-// test("should sign up successfully", async ({ request }) => {
-// 	const signUp = await request.post("/users", {
-// 		data: {
-// 			firstName: dataPrep.firstName,
-// 			lastName: dataPrep.lastName,
-// 			email: dataPrep.email,
-// 			password: dataPrep.password,
-// 		},
-// 	});
+test("should sign up successfully", async ({ request }) => {
+	const signUp = await request.post("/users", {
+		data: {
+			firstName: dataPrep.firstName,
+			lastName: dataPrep.lastName,
+			email: dataPrep.email,
+			password: dataPrep.password,
+		},
+	});
 
-// 	const response = await signUp.json();
-// 	console.log(response);
+	const response = await signUp.json();
+	console.log(response);
 
-// 	expect(signUp.ok()).toBeTruthy();
-// 	expect(response.user.firstName).toBe(dataPrep.firstName);
-// 	expect(response.user.lastName).toBe(dataPrep.lastName);
-// 	expect(response.user.email).toBe(dataPrep.email);
-// });
+	expect(signUp.ok()).toBeTruthy();
+	expect(response.user.firstName).toBe(dataPrep.firstName);
+	expect(response.user.lastName).toBe(dataPrep.lastName);
+	expect(response.user.email).toBe(dataPrep.email);
+});
 
-// test("should log in successfully", async ({ request }) => {
-// 	const logIn = await request.post("/users/login", {
-// 		data: {
-// 			email: "mycontacttest@yopmail.com",
-// 			password: "Qwerty1209!",
-// 		},
-// 	});
+test("should log in successfully", async ({ request }) => {
+	const logIn = await request.post("/users/login", {
+		data: {
+			email: "mycontacttest@yopmail.com",
+			password: "Qwerty1209!",
+		},
+	});
 
-// 	const response = await logIn.json();
-// 	console.log(response);
+	const response = await logIn.json();
+	console.log(response);
 
-// 	expect(logIn.ok()).toBeTruthy();
-// 	expect(response.user.firstName).toBe("Test");
-// 	expect(response.user.lastName).toBe("User");
-// 	expect(response.user.email).toBe("mycontacttest@yopmail.com");
-// });
+	expect(logIn.ok()).toBeTruthy();
+	expect(response.user.firstName).toBe("Test");
+	expect(response.user.lastName).toBe("User");
+	expect(response.user.email).toBe("mycontacttest@yopmail.com");
+});
 
 test("should get user profile successfully", async ({ request }) => {
 	const token = await getToken();
