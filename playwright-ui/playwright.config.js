@@ -1,29 +1,63 @@
-import { defineConfig, devices } from "@playwright/test";
+// @ts-check
+import { defineConfig, devices } from '@playwright/test';
+import 'dotenv/config';
 
 export default defineConfig({
-  // Look for test files in the "tests" directory, relative to this configuration file.
-  testDir: "tests",
+  globalSetup: './globalSetup.js',
 
-  // Run all tests in parallel.
-  fullyParallel: false,
+  testDir: './tests',
 
-  // Reporter to use
-  reporter: "html",
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
 
   use: {
-    // Base URL to use in actions like `await page.goto('/')`.
-    baseURL: "https://thinking-tester-contact-list.herokuapp.com/",
-
-    // Collect trace when retrying the failed test.
-    trace: "on-first-retry",
+    trace: 'on-first-retry',
   },
-  // Configure projects for major browsers.
+
   projects: [
+    // ======================
+    // UI PROJECTS (Browsers)
+    // ======================
     {
-      name: "Microsoft Edge",
+      name: 'chromium',
+      testDir: './tests/ui',
       use: {
-        ...devices["Desktop Edge"],
-        channel: "msedge",
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://localhost:3000',
+      },
+    },
+    {
+      name: 'firefox',
+      testDir: './tests/ui',
+      use: {
+        ...devices['Desktop Firefox'],
+        baseURL: 'http://localhost:3000',
+      },
+    },
+    {
+      name: 'webkit',
+      testDir: './tests/ui',
+      use: {
+        ...devices['Desktop Safari'],
+        baseURL: 'http://localhost:3000',
+      },
+    },
+
+    // ======================
+    // API PROJECT
+    // ======================
+    {
+      name: 'api',
+      testDir: './tests/api',
+      use: {
+        baseURL: process.env.API_BASE_URL,
+        extraHTTPHeaders: {
+          'Accept': 'application/vnd.github.v3+json',
+          'Authorization': `token ${process.env.API_TOKEN}`,
+        },
       },
     },
   ],
