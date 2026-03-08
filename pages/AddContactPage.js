@@ -1,25 +1,61 @@
-import { expect } from '@playwright/test'
-import { prepareContactData } from '../utils/DataPrep.js'
+import { expect } from "@playwright/test";
+import { prepareContactData } from "../utils/DataPrep.js";
+import { writeFile } from "fs/promises";
 
-export const addNewContacts = async (page, contactAmount=5) => {
-    for (let i = 0; i < contactAmount; i++) {
-        await expect(page.locator('#add-contact')).toBeVisible({ timeout: 45000 });
-        await page.click('#add-contact');
-        const data = prepareContactData()
-        await page.locator('#firstName').fill((data.firstName).substring(0, 20));
-        await page.locator('#lastName').fill((data.lastName).substring(0, 20));
-        await page.locator('#birthdate').fill(data.dateOfBirth);
-        await page.locator('#email').fill(data.email);
-        await page.locator('#phone').fill(data.phone);
-        await page.locator('#street1').fill(data.streetAddr1);
-        await page.locator('#street2').fill(data.streetAddr2);
-        await page.locator('#city').fill(data.city);
-        await page.locator('#stateProvince').fill(data.state);
-        await page.locator('#postalCode').fill(data.postalCode);
-        await page.locator('#country').fill((data.country).substring(0, 40));
-        await page.click('#submit');
-        await expect(page.locator('.contactTableBodyRow').nth(0)).toBeVisible({ timeout: 45000 });
-        await expect(page.locator('.contactTableBodyRow')).toHaveCount(i + 1, );
-    }
-    return contactAmount
+export class AddContactPage {
+	constructor(page) {
+		this.page = page;
+		this.title = "Add Contact";
+		this.header = page.getByRole("heading", { name: "Add Contact" });
+		this.firstNameInput = page.locator("#firstName");
+		this.lastNameInput = page.locator("#lastName");
+		this.birthdateInput = page.locator("#birthdate");
+		this.emailInput = page.locator("#email");
+		this.phoneInput = page.locator("#phone");
+		this.street1Input = page.locator("#street1");
+		this.street2Input = page.locator("#street2");
+		this.cityInput = page.locator("#city");
+		this.stateProvinceInput = page.locator("#stateProvince");
+		this.postalCodeInput = page.locator("#postalCode");
+		this.countryInput = page.locator("#country");
+		this.submitBtn = page.locator("#submit");
+		this.cancelBtn = page.locator("#cancel");
+		this.logoutBtn = page.locator("#logout");
+	}
+
+	async addNewContacts() {
+		await expect(this.page).toHaveTitle(this.title);
+		await expect(this.page).toHaveTitle(this.title);
+		await expect(this.header).toBeVisible();
+
+		const data = prepareContactData();
+		await this.firstNameInput.fill(data.firstName);
+		await this.lastNameInput.fill(data.lastName);
+		await this.birthdateInput.fill(data.dateOfBirth);
+		await this.emailInput.fill(data.email);
+		await this.phoneInput.fill(data.phone);
+		await this.street1Input.fill(data.streetAddr1);
+		await this.street2Input.fill(data.streetAddr2);
+		await this.cityInput.fill(data.city);
+		await this.stateProvinceInput.fill(data.state);
+		await this.postalCodeInput.fill(data.postalCode);
+		await this.countryInput.fill(data.country);
+
+		await this.submitBtn.click();
+
+		const addedUserDetail = [
+			`${data.firstName} ${data.lastName}`,
+			`${data.dateOfBirth}`,
+			`${data.email}`,
+			`${data.phone}`,
+			`${data.streetAddr1} ${data.streetAddr2}`,
+			`${data.city} ${data.state} ${data.postalCode}`,
+			`${data.country}`,
+		];
+
+		await writeFile(
+			"temp/AddedUser.json",
+			JSON.stringify(addedUserDetail, null, 4),
+		);
+	}
 }

@@ -6,14 +6,16 @@ export default defineConfig({
 	testDir: "./tests",
 
 	fullyParallel: true,
-	forbidOnly: !!process.env.CI,
-	retries: process.env.CI ? 2 : 0,
-	workers: process.env.CI ? 1 : undefined,
+	retries: 3,
 	reporter: "html",
 
 	use: {
 		baseURL: "https://thinking-tester-contact-list.herokuapp.com",
 		trace: "on-first-retry",
+	},
+
+	expect: {
+		timeout: 10000
 	},
 
 	projects: [

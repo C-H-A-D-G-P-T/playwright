@@ -1,15 +1,50 @@
-import { test } from '@playwright/test';
-import { signup } from '../../pages/SignUpPage.js'
-import { logout, exportContactsAsJson } from '../../pages/ContactListPage.js'
-import { login } from '../../pages/LoginPage.js'
-import { addNewContacts } from '../../pages/AddContactPage.js'
-import { deleteAllContacts } from '../../pages/ContactDetailsPage.js'
+import { test } from "@playwright/test";
+import { SignUpPage } from "../../pages/SignUpPage.js";
+import { LoginPage } from "../../pages/LoginPage.js";
+import { getUserData } from "../../utils/DataPrep.js";
+import { ContactListPage } from "../../pages/ContactListPage.js";
+import { AddContactPage } from "../../pages/AddContactPage.js";
 
-test('Sign up successfully', async ({ page }) => {
-    const { email, password } = await signup(page);
-    await logout(page);
-    await login(page, email, password);
-    const contactAmount = await addNewContacts(page, 2);
-    await exportContactsAsJson(page, contactAmount);
-    await deleteAllContacts(page);
-})
+test("Sign up successfully", async ({ page }) => {
+	const loginPage = new LoginPage(page);
+	const signupPage = new SignUpPage(page);
+
+	await loginPage.goto();
+	await loginPage.clickSignUp();
+	await signupPage.signup();
+});
+
+test("Log in successfully", async ({ page }) => {
+	const loginPage = new LoginPage(page);
+
+	await loginPage.goto();
+	await loginPage.login(getUserData().email, getUserData().password);
+});
+
+test("Add contacts successfully", async ({ page }) => {
+	const loginPage = new LoginPage(page);
+	const contactListPage = new ContactListPage(page);
+	const addContactPage = new AddContactPage(page);
+
+	await loginPage.goto();
+	await loginPage.login(getUserData().email, getUserData().password);
+
+	await contactListPage.clickAddNewContactBtn();
+	await addContactPage.addNewContacts();
+	await contactListPage.validateAddedContact();
+});
+
+test("Add multiple contacts successfully", async ({ page }) => {
+	const loginPage = new LoginPage(page);
+	const contactListPage = new ContactListPage(page);
+	const addContactPage = new AddContactPage(page);
+
+	await loginPage.goto();
+	await loginPage.login(getUserData().email, getUserData().password);
+
+	for (let i = 0; i < 3; i++) {
+		await contactListPage.clickAddNewContactBtn();
+		await addContactPage.addNewContacts();
+		await contactListPage.validateAddedContact();
+	}
+});

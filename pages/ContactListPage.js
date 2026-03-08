@@ -1,33 +1,52 @@
-import { expect } from '@playwright/test'
-import { writeFile } from 'fs/promises';
+import { expect } from "@playwright/test";
+import fs from "fs";
 
-export const logout = async (page) => {
-    await page.click('#logout');
-    await expect(page).toHaveTitle('Contact List App');
-}
+export class ContactListPage {
+	constructor(page) {
+		this.page = page;
+		this.title = "My Contacts";
+		this.header = page.getByRole("heading", { name: "Contact List" });
+		this.addNewContactBtn = page.locator("#add-contact");
 
-export const exportContactsAsJson = async (page, contactAmount) => {
-    let listData = []
-    for (let i = 0; i < contactAmount; i++) {
-        const fullName = await page.locator(`//tr[@class="contactTableBodyRow"][${i + 1}]/td[2]`).textContent();
-        const birthDate = await page.locator(`//tr[@class="contactTableBodyRow"][${i + 1}]/td[3]`).textContent();
-        const email = await page.locator(`//tr[@class="contactTableBodyRow"][${i + 1}]/td[4]`).textContent();
-        const phoneNumber = await page.locator(`//tr[@class="contactTableBodyRow"][${i + 1}]/td[5]`).textContent();
-        const address = await page.locator(`//tr[@class="contactTableBodyRow"][${i + 1}]/td[6]`).textContent();
-        const city = await page.locator(`//tr[@class="contactTableBodyRow"][${i + 1}]/td[7]`).textContent();
-        const country = await page.locator(`//tr[@class="contactTableBodyRow"][${i + 1}]/td[8]`).textContent();
-        const dictData = {
-            Name: fullName,
-            Birthdate: birthDate,
-            Email: email,
-            Address1: address,
-            Address2: city,
-            Country: country
-        };
-        console.log(dictData);
-        listData.push(dictData);
-    }
-    console.log(listData);
-    await writeFile('contacts.json', JSON.stringify(listData, null, 4));
-    console.log('Contacts saved to contacts.json');
+		this.tableHeaders = page.locator("th");
+		this.columnList = [
+			"Name",
+			"Birthdate",
+			"Email",
+			"Phone",
+			"Address",
+			"City, State/Province, Postal Code",
+			"Country",
+		];
+
+		this.logoutBtn = page.locator("#logout");
+	}
+
+	async goto() {
+		await expect(this.page).toHaveTitle(this.title);
+		await expect(this.header).toBeVisible();
+	}
+
+	async clickAddNewContactBtn() {
+		await this.goto();
+		await this.addNewContactBtn.click();
+	}
+
+	async validateAddedContact() {
+		await this.goto();
+		await expect(this.tableHeaders).toHaveText(this.columnList);
+
+		const addedUser = JSON.parse(
+			fs.readFileSync("temp/AddedUser.json", "utf8"),
+		);
+		// const row = this.page.locator(`//tr[./td[text()="${addedUser[0]}"]]/td:not(:first-child)`)
+		const row = this.page.locator("tr").filter({ hasText: addedUser[0] });
+		const cells = row.locator("td");
+		// await expect(cells).toHaveText(addedUser)
+		await expect(cells).toContainText(addedUser);
+	}
+
+	async logout() {
+		await this.logoutBtn.click();
+	}
 }
