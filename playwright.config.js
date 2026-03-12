@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from "@playwright/test";
-import "dotenv/config";
+// import "dotenv/config";
 
 export default defineConfig({
 	testDir: "./tests",
@@ -16,7 +16,7 @@ export default defineConfig({
 	},
 
 	expect: {
-		timeout: 10000
+		timeout: 10000,
 	},
 
 	projects: [
@@ -51,9 +51,6 @@ export default defineConfig({
 		{
 			name: "api",
 			testDir: "./tests/api",
-			use: {
-				baseURL: "https://thinking-tester-contact-list.herokuapp.com",
-			},
 		},
 	],
 });

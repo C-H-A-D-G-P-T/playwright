@@ -52,8 +52,8 @@ test("should log in successfully", async ({ request }) => {
 	console.log(response);
 
 	expect(logIn.ok()).toBeTruthy();
-	expect(response.user.firstName).toBe("Test");
-	expect(response.user.lastName).toBe("User");
+	expect(response.user.firstName).toBe("Warit");
+	expect(response.user.lastName).toBe("Tanmanee");
 	expect(response.user.email).toBe("mycontacttest@yopmail.com");
 });
 
