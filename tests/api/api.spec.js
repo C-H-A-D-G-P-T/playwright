@@ -69,7 +69,7 @@ test("should get user profile successfully", async ({ request }) => {
 	console.log(response);
 
 	expect(getProfile.ok).toBeTruthy();
-	expect(response.firstName).toBe("Test");
-	expect(response.lastName).toBe("User");
+	expect(response.firstName).toBe("Warit");
+	expect(response.lastName).toBe("Tanmanee");
 	expect(response.email).toBe("mycontacttest@yopmail.com");
 });
