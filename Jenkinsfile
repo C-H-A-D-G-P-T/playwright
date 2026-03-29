@@ -2,6 +2,18 @@ pipeline {
     agent any
 
     stages {
+        stage('Debug') {
+            steps {
+                sh '''
+                echo $PATH
+                which node
+                which npm
+                node -v
+                npm -v
+                '''
+            }
+        }
+
         stage('Install') {
             steps {
                 script {
