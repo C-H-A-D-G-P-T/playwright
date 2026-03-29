@@ -4,15 +4,21 @@ pipeline {
     stages {
         stage('Install') {
             steps {
-                bat 'npm install'
-                bat 'npx playwright install'
+                script {
+                    def shell = isUnix() ? sh : bat
+                    shell('npm install')
+                    shell('npx playwright install')
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat 'npx playwright test e2e'
-                bat 'npx playwright test api'
+                script {
+                    def shell = isUnix() ? sh : bat
+                    shell('npx playwright test e2e')
+                    shell('npx playwright test api')
+                }
             }
         }
     }
